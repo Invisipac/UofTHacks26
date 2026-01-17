@@ -18,3 +18,5 @@ ENV/
 .idea/
 *.swp
 *.swo
+
+.jpg
