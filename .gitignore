@@ -19,4 +19,8 @@ ENV/
 *.swp
 *.swo
 
-.jpg
+# Ignore all JPG images
+*.jpg
+*.jpeg
+*.JPG
+*.JPEG
