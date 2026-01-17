@@ -3,7 +3,7 @@ import mediapipe as mp
 import numpy as np
 import urllib.request
 import os
-
+import time
 # -----------------------------
 # Download model if needed
 # -----------------------------
@@ -78,7 +78,34 @@ FOREHEAD = [10, 338, 297, 332, 284, 251]
 # Load image (or webcam frame)
 # -----------------------------
 cap = cv2.VideoCapture(0)
-ret, image = cap.read()
+
+
+time.sleep(2)
+
+# Show live preview and wait for spacebar to capture
+print("Press SPACEBAR to capture image, ESC to exit")
+while True:
+    ret, image = cap.read()
+    if not ret:
+        print("Failed to grab frame")
+        break
+    
+    cv2.imshow('Press SPACEBAR to capture', image)
+    
+    key = cv2.waitKey(1)
+    if key == 32:  # Spacebar
+        print("Image captured!")
+        break
+    elif key == 27:  # ESC
+        print("Cancelled")
+        cap.release()
+        cv2.destroyAllWindows()
+        exit()
+
+cv2.destroyAllWindows()
+
+
+# ret, image = cap.read()
 # image = cv2.imread("face. jpg")  # replace with webcam frame if needed
 
 # Convert to RGB (MediaPipe requires RGB)
