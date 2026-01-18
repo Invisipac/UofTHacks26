@@ -553,7 +553,7 @@ export default function HomeScreen() {
             <div className="mb-4">
                {/* @ts-ignore */}
                <span className="text-xs md:text-sm font-bold tracking-[0.4em] uppercase text-pastel text-glow">
-                 becomeBaddie.ai
+                 glowstate
                </span>
             </div>
 
