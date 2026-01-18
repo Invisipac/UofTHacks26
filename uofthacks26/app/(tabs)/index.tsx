@@ -181,6 +181,56 @@ const getSeverityColor = (severity: string) => {
 };
 
 const AnalysisResultView: React.FC<{ result: AnalysisResult; onReset: () => void }> = ({ result, onReset }) => {
+  const [isPrinting, setIsPrinting] = useState(false);
+
+  const handlePrintFormula = async () => {
+    setIsPrinting(true);
+    try {
+      // Convert percentages to milliseconds (100% = 10 seconds = 10000 ms)
+      // Since percentages are 0-100 range, multiply by 100 to get ms (1% = 100ms)
+      const t1 = Math.round(result.dispenser.cleanser_pct * 200);
+      const t2 = Math.round(result.dispenser.treatment_pct * 200);
+      const t3 = Math.round(result.dispenser.moisturizer_pct * 200);
+
+      const url = `http://${ESP32_IP}/dispense?t1=${t1}&t2=${t2}&t3=${t3}`;
+      console.log('Sending formula to ESP32:', url);
+
+      // Try with no-cors mode if regular fetch fails (ESP32 may not support CORS)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+
+      try {
+        await fetch(url, {
+          method: 'GET',
+          mode: 'no-cors', // Bypass CORS - ESP32 likely doesn't send CORS headers
+          signal: controller.signal,
+        });
+        clearTimeout(timeoutId);
+        // With no-cors mode, we can't read the response, but the request was sent
+        alert('Formula sent successfully to dispenser!');
+      } catch (fetchError: any) {
+        clearTimeout(timeoutId);
+        // If no-cors also fails, try regular fetch as fallback
+        if (fetchError.name === 'AbortError') {
+          throw new Error('Request timeout - ESP32 may be unreachable');
+        }
+        throw fetchError;
+      }
+    } catch (error: any) {
+      console.error('Error printing formula:', error);
+      const errorMsg = error.message || 'ESP32 unreachable';
+      
+      // More helpful error messages
+      if (error.message?.includes('Failed to fetch') || error.message?.includes('NetworkError')) {
+        alert(`Cannot connect to ESP32 at ${ESP32_IP}.\n\nPlease check:\n- ESP32 is powered on\n- ESP32 is on the same network\n- IP address is correct`);
+      } else {
+        alert(`Failed to send formula: ${errorMsg}`);
+      }
+    } finally {
+      setIsPrinting(false);
+    }
+  };
+
   return (
     // @ts-ignore
     <div className="w-full max-w-7xl mx-auto space-y-8 lg:space-y-12 animate-fade-in-up pb-24 px-4 font-sans">
@@ -360,7 +410,10 @@ const AnalysisResultView: React.FC<{ result: AnalysisResult; onReset: () => void
           </div>
 
           {/* @ts-ignore */}
-          <div className="pt-4">
+          <div className="pt-4 space-y-3">
+            <Button onClick={handlePrintFormula} variant="primary" className="w-full py-4 text-sm tracking-widest uppercase" disabled={isPrinting}>
+              {isPrinting ? 'Printing...' : 'Print Formula'}
+            </Button>
             <Button onClick={onReset} variant="outline" className="w-full py-4 text-sm tracking-widest uppercase">
               Start New Analysis
             </Button>
@@ -381,7 +434,8 @@ const AnalysisResultView: React.FC<{ result: AnalysisResult; onReset: () => void
 
 // --- Main App Implementation ---
 // Replace this with your actual API endpoint if different
-const API_URL = 'http://localhost:8000'; 
+const API_URL = 'http://localhost:8000';
+const ESP32_IP = '172.20.10.6'; 
 
 export default function HomeScreen() {
   const [viewState, setViewState] = useState<ViewState>('landing');
