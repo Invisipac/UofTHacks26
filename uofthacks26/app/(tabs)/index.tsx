@@ -565,8 +565,8 @@ export default function HomeScreen() {
             
             {/* @ts-ignore */}
             <p className="text-lg text-gray-300 mb-12 max-w-lg leading-relaxed font-light">
-              Medical-grade skin analysis powered by artificial intelligence. 
-              Get personalized formulas in seconds.
+              Skin analysis powered by artificial intelligence. 
+              Get personalized solutions in seconds.
             </p>
 
             {/* @ts-ignore */}
