@@ -418,17 +418,17 @@ def calculate_product_ratios(acne_count, blemish_count, oiliness_score):
     Formula:
         Severity Score = (acne × 3) + (blemishes × 1.5) + (oiliness% × 0.3)
         
-        Base ratios: Cleanser 33%, Treatment 17%, Moisturizer 50%
+        Base ratios: toner 33%, Treatment 17%, Moisturizer 50%
         
         Adjustments:
         - Treatment: +1.5% per severity point (capped at 55%)
         - Moisturizer: -1% per severity point, -0.2% per oiliness% (min 15%)
-        - Cleanser: fills remainder (typically 25-35%)
+        - toner: fills remainder (typically 25-35%)
         
         Total dispense: 3.5ml base, +0.5ml if oiliness > 50%
     
     Returns:
-        dict with 'cleanser', 'treatment', 'moisturizer' percentages and 'total_ml'
+        dict with 'toner', 'treatment', 'moisturizer' percentages and 'total_ml'
     """
     # Calculate severity score
     severity = (acne_count * 3) + (blemish_count * 1.5) + (oiliness_score * 0.3)
@@ -445,15 +445,15 @@ def calculate_product_ratios(acne_count, blemish_count, oiliness_score):
     moisturizer = base_moisturizer - (severity * 1.0) - (oiliness_score * 0.2)
     moisturizer = min(50, max(15, moisturizer))  # Clamp between 15-50%
     
-    # Cleanser fills the remainder
-    cleanser = 100 - treatment - moisturizer
-    cleanser = min(40, max(20, cleanser))  # Clamp between 20-40%
+    # toner fills the remainder
+    toner = 100 - treatment - moisturizer
+    toner = min(40, max(20, toner))  # Clamp between 20-40%
     
     # Normalize to ensure they sum to 100%
-    total = cleanser + treatment + moisturizer
-    cleanser = round(cleanser / total * 100)
+    total = toner + treatment + moisturizer
+    toner = round(toner / total * 100)
     treatment = round(treatment / total * 100)
-    moisturizer = 100 - cleanser - treatment  # Ensure exact 100%
+    moisturizer = 100 - toner - treatment  # Ensure exact 100%
     
     # Calculate total ml to dispense
     total_ml = 3.5
@@ -461,7 +461,7 @@ def calculate_product_ratios(acne_count, blemish_count, oiliness_score):
         total_ml = 4.0  # Extra for oily skin
     
     return {
-        'cleanser': cleanser,
+        'toner': toner,
         'treatment': treatment,
         'moisturizer': moisturizer,
         'total_ml': total_ml,
@@ -646,7 +646,7 @@ def analyze_image(image_path):
     print(f"  SEVERITY SCORE: {ratios['severity_score']}")
     print("-" * 50)
     print(f"  DISPENSER ({ratios['total_ml']}ml total):")
-    print(f"    Cleanser:    {ratios['cleanser']}% ({ratios['cleanser'] * ratios['total_ml'] / 100:.2f}ml)")
+    print(f"    toner:    {ratios['toner']}% ({ratios['toner'] * ratios['total_ml'] / 100:.2f}ml)")
     print(f"    Treatment:   {ratios['treatment']}% ({ratios['treatment'] * ratios['total_ml'] / 100:.2f}ml)")
     print(f"    Moisturizer: {ratios['moisturizer']}% ({ratios['moisturizer'] * ratios['total_ml'] / 100:.2f}ml)")
     print("=" * 50)

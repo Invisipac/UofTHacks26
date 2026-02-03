@@ -87,11 +87,11 @@ def analyze_image_api(image_bytes):
         "severity_score": ratios["severity_score"],
         "regions": region_counts,
         "dispenser": {
-            "cleanser_pct": ratios["cleanser"],
+            "toner_pct": ratios["toner"],
             "treatment_pct": ratios["treatment"],
             "moisturizer_pct": ratios["moisturizer"],
             "total_ml": ratios["total_ml"],
-            "cleanser_ml": round(ratios["cleanser"] * ratios["total_ml"] / 100, 2),
+            "toner_ml": round(ratios["toner"] * ratios["total_ml"] / 100, 2),
             "treatment_ml": round(ratios["treatment"] * ratios["total_ml"] / 100, 2),
             "moisturizer_ml": round(ratios["moisturizer"] * ratios["total_ml"] / 100, 2),
         },

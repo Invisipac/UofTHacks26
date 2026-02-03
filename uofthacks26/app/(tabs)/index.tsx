@@ -13,11 +13,11 @@ interface AnalysisResult {
   severity_score: number;
   regions: Record<string, number>;
   dispenser: {
-    cleanser_pct: number;
+    toner_pct: number;
     treatment_pct: number;
     moisturizer_pct: number;
     total_ml: number;
-    cleanser_ml: number;
+    toner_ml: number;
     treatment_ml: number;
     moisturizer_ml: number;
   };
@@ -188,7 +188,7 @@ const AnalysisResultView: React.FC<{ result: AnalysisResult; onReset: () => void
     try {
       // Convert percentages to milliseconds (100% = 10 seconds = 10000 ms)
       // Since percentages are 0-100 range, multiply by 100 to get ms (1% = 100ms)
-      const t1 = Math.round(result.dispenser.cleanser_pct * 200);
+      const t1 = Math.round(result.dispenser.toner_pct * 200);
       const t2 = Math.round(result.dispenser.treatment_pct * 200);
       const t3 = Math.round(result.dispenser.moisturizer_pct * 200);
 
@@ -330,7 +330,7 @@ const AnalysisResultView: React.FC<{ result: AnalysisResult; onReset: () => void
             {/* @ts-ignore */}
             <div className="h-4 flex rounded-full overflow-hidden bg-black/40 mb-8 border border-white/5">
               {/* @ts-ignore */}
-              <div style={{ width: `${result.dispenser.cleanser_pct}%` }} className="h-full bg-pastel transition-all duration-1000 ease-out relative group shadow-[0_0_10px_rgba(188,226,191,0.5)]"></div>
+              <div style={{ width: `${result.dispenser.toner_pct}%` }} className="h-full bg-pastel transition-all duration-1000 ease-out relative group shadow-[0_0_10px_rgba(188,226,191,0.5)]"></div>
               {/* @ts-ignore */}
               <div style={{ width: `${result.dispenser.treatment_pct}%` }} className="h-full bg-emerald-500 transition-all duration-1000 ease-out delay-100 relative group"></div>
               {/* @ts-ignore */}
@@ -347,10 +347,10 @@ const AnalysisResultView: React.FC<{ result: AnalysisResult; onReset: () => void
                   {/* @ts-ignore */}
                   <div className="w-3 h-3 rounded-full bg-pastel shadow-[0_0_8px_rgba(188,226,191,0.6)]" />
                   {/* @ts-ignore */}
-                  <span className="text-sm text-gray-300 font-medium">Cleanser</span>
+                  <span className="text-sm text-gray-300 font-medium">Toner</span>
                 </div>
                 {/* @ts-ignore */}
-                <span className="text-sm font-bold text-white">{result.dispenser.cleanser_ml}ml</span>
+                <span className="text-sm font-bold text-white">{result.dispenser.toner_ml}ml</span>
               </div>
               {/* @ts-ignore */}
               <div className="flex items-center justify-between group">
